@@ -6,6 +6,8 @@ import org.odata4j.android.AndroidLogger;
 import org.odata4j.android.R;
 import org.odata4j.android.model.ServiceVM;
 import org.odata4j.consumer.ODataConsumer;
+import org.odata4j.core.EntitySetInfo;
+import org.odata4j.core.OFuncs;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -26,7 +28,7 @@ public class EntitySetsActivity extends ListActivity {
     final ServiceVM service = (ServiceVM) getIntent().getExtras().getSerializable("service");
 
     ODataConsumer c = ODataConsumer.create(service.getUri());
-    List<String> entitySets = c.getEntitySets().toList();
+    List<String> entitySets = c.getEntitySets().select(OFuncs.entitySetInfoTitle()).toList();
 
     setListAdapter(new ArrayAdapter<String>(this, R.layout.entityset, entitySets));
     getListView().setTextFilterEnabled(true);
