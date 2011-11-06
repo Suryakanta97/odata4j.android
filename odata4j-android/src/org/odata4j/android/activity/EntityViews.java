@@ -81,15 +81,7 @@ public class EntityViews {
         });
       }
     }
-    
-    // edit
-    spannables.append("edit", new OnClickListener(){
-      @Override
-      public void onClick(View v) {
-        context.startActivity(new Intent(context, EntityEditActivity.class)
-            .putExtra("service", service));
-            //.putExtra("properties", new SerializableORelatedEntityLink((ORelatedEntityLink) link)));
-      }});
+
     spannables.apply(linksView);
     layout.addView(linksView);
     return layout;
@@ -140,7 +132,7 @@ public class EntityViews {
           //                        //value.setScaleType(ScaleType.CENTER);
           //                       // value.setImageURI(Uri.parse(sv));
           //                        row.addView(value);
-          //                        
+          //
           //                    } else {
 
           // render content, detect html

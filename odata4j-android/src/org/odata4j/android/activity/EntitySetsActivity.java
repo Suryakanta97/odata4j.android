@@ -6,7 +6,6 @@ import org.odata4j.android.AndroidLogger;
 import org.odata4j.android.R;
 import org.odata4j.android.model.ServiceVM;
 import org.odata4j.consumer.ODataConsumer;
-import org.odata4j.core.EntitySetInfo;
 import org.odata4j.core.OFuncs;
 
 import android.app.ListActivity;
@@ -41,4 +40,5 @@ public class EntitySetsActivity extends ListActivity {
       }
     });
   }
+
 }
