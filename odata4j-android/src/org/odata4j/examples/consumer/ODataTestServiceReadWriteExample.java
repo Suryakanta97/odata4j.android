@@ -8,13 +8,14 @@ import org.odata4j.core.OEntity;
 import org.odata4j.core.OFuncs;
 import org.odata4j.core.OProperties;
 import org.odata4j.examples.BaseExample;
+import org.odata4j.jersey.consumer.ODataJerseyConsumer;
 
 public class ODataTestServiceReadWriteExample extends BaseExample {
 
   public static void main(String... args) {
 
     // create a new odata consumer pointing to the odata test read-write service
-    ODataConsumer c = ODataConsumer.create(ODATA_TEST_SERVICE_READWRITE2);
+    ODataConsumer c = ODataJerseyConsumer.create(ODATA_TEST_SERVICE_READWRITE2);
 
     //ODataConsumer.dump.all(true);
 

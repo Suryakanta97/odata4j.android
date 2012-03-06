@@ -5,12 +5,13 @@ import org.odata4j.core.OEntity;
 import org.odata4j.core.OProperties;
 import org.odata4j.examples.BaseExample;
 import org.odata4j.examples.ODataEndpoints;
+import org.odata4j.jersey.consumer.ODataJerseyConsumer;
 
 public class AppEngineConsumerExample extends BaseExample {
 
   public static void main(String... args) {
 
-    ODataConsumer c = ODataConsumer.create(ODataEndpoints.ODATA4JSAMPLE_APPSPOT);
+    ODataConsumer c = ODataJerseyConsumer.create(ODataEndpoints.ODATA4JSAMPLE_APPSPOT);
     //ODataConsumer.create("http://localhost:8888/datastore.svc");
 
     String newCategoryName = "NewCategory" + System.currentTimeMillis();

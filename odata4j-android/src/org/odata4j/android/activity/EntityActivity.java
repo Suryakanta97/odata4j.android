@@ -7,6 +7,7 @@ import org.odata4j.core.OEntity;
 import org.odata4j.core.OLinks;
 import org.odata4j.core.ORelatedEntityLink;
 import org.odata4j.examples.ODataEndpoints;
+import org.odata4j.jersey.consumer.ODataJerseyConsumer;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -38,7 +39,7 @@ public class EntityActivity extends Activity {
       log.info("link " + link.getHref()); //  Titles('13kZA')/Season
 
     setTitle("Entity");
-    ODataConsumer c = ODataConsumer.create(service.getUri());
+    ODataConsumer c = ODataJerseyConsumer.create(service.getUri());
     ODataConsumer.dump.requestHeaders(true);
     //ODataConsumer.DUMP_RESPONSE_BODY = true;
     OEntity entity = c.getEntity(link).execute();

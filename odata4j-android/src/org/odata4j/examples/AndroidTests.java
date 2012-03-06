@@ -4,6 +4,7 @@ import org.odata4j.consumer.ODataConsumer;
 import org.odata4j.core.OEntity;
 import org.odata4j.core.OProperties;
 import org.odata4j.format.FormatType;
+import org.odata4j.jersey.consumer.ODataJerseyConsumer;
 
 import android.util.Log;
 
@@ -15,7 +16,7 @@ public class AndroidTests {
   }
 
   private static void runScenario(FormatType formatType) {
-    ODataConsumer c = ODataConsumer.newBuilder(ODataEndpoints.ODATA_TEST_SERVICE_READWRITE1).setFormatType(formatType).build();
+    ODataConsumer c = ODataJerseyConsumer.newBuilder(ODataEndpoints.ODATA_TEST_SERVICE_READWRITE1).setFormatType(formatType).build();
     String logPrefix = String.format("[%s] ", formatType);
 
     log(logPrefix + "Categories count: %s", c.getEntities("Categories").execute().count());

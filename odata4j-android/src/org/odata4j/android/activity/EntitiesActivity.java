@@ -9,6 +9,8 @@ import org.odata4j.consumer.ODataConsumer;
 import org.odata4j.core.OEntity;
 import org.odata4j.core.ORelatedEntitiesLink;
 import org.odata4j.examples.ODataEndpoints;
+import org.odata4j.jersey.consumer.ODataJerseyConsumer;
+import org.odata4j.jersey.consumer.behaviors.AllowSelfSignedCertsBehavior;
 
 import android.app.ListActivity;
 import android.os.Bundle;
@@ -40,8 +42,9 @@ public class EntitiesActivity extends ListActivity {
 
     setTitle(link != null ? link.getTitle() : entitySet);
 
-    ODataConsumer c = ODataConsumer.create(service.getUri());
-    ODataConsumer.dump.requestHeaders(true);
+
+    ODataConsumer c = ODataJerseyConsumer.newBuilder(service.getUri()).setClientBehaviors(AllowSelfSignedCertsBehavior.allowSelfSignedCerts()).build();
+    ODataConsumer.dump.all(true);
 
     Iterator<OEntity> entities = (link != null ? c.getEntities(link) : c.getEntities(entitySet))
             // .top(10)
