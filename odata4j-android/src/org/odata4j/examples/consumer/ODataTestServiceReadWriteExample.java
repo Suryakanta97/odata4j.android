@@ -1,23 +1,25 @@
 package org.odata4j.examples.consumer;
 
-import static org.odata4j.examples.ODataEndpoints.ODATA_TEST_SERVICE_READWRITE2;
-
 import org.joda.time.LocalDateTime;
 import org.odata4j.consumer.ODataConsumer;
+import org.odata4j.consumer.ODataConsumers;
 import org.odata4j.core.OEntity;
 import org.odata4j.core.OFuncs;
 import org.odata4j.core.OProperties;
-import org.odata4j.examples.BaseExample;
-import org.odata4j.jersey.consumer.ODataJerseyConsumer;
+import org.odata4j.examples.AbstractExample;
+import org.odata4j.examples.ODataEndpoints;
+import org.odata4j.exceptions.NotFoundException;
+import org.odata4j.exceptions.ODataProducerException;
 
-public class ODataTestServiceReadWriteExample extends BaseExample {
+public class ODataTestServiceReadWriteExample extends AbstractExample {
 
-  public static void main(String... args) {
+  public static void main(String[] args) {
+    ODataTestServiceReadWriteExample example = new ODataTestServiceReadWriteExample();
+    example.run(args);
+  }
 
-    // create a new odata consumer pointing to the odata test read-write service
-    ODataConsumer c = ODataJerseyConsumer.create(ODATA_TEST_SERVICE_READWRITE2);
-
-    //ODataConsumer.dump.all(true);
+  private void run(String[] args) {
+    ODataConsumer c = ODataConsumers.create(ODataEndpoints.ODATA_TEST_SERVICE_READWRITE2);
 
     // take a look at the service edm
     reportMetadata(c.getMetadata());
@@ -36,13 +38,13 @@ public class ODataTestServiceReadWriteExample extends BaseExample {
     reportEntity("DVD Player", dvdPlayer);
 
     // we are about to add a new product, first make sure it does not exist
-    c.deleteEntity("Products", 10).execute();
+    try { c.deleteEntity("Products", 10).execute(); } catch (NotFoundException e) {}
 
     // create the new product
     OEntity newProduct = c.createEntity("Products")
         .properties(OProperties.int32("ID", 10))
         .properties(OProperties.string("Name", "Josta"))
-        .properties(OProperties.string("Description", "With guaran√°"))
+        .properties(OProperties.string("Description", "With guaran·"))
         .properties(OProperties.datetime("ReleaseDate", new LocalDateTime()))
         .properties(OProperties.int32("Rating", 1))
         .properties(OProperties.decimal("Price", 1.23))
@@ -70,7 +72,9 @@ public class ODataTestServiceReadWriteExample extends BaseExample {
 
     // clean up, delete the new product
     c.deleteEntity("Products", 10).execute();
-    report("newProduct " + (c.getEntity("Products", 10).execute() == null ? "does not exist" : "exists"));
+    boolean exists = true;
+    try { c.getEntity("Products", 10).execute(); } catch (ODataProducerException e) { if (e.getHttpStatus().getStatusCode() == 404) exists = false; }
+    report("newProduct " + (exists ? "exists" : "does not exist"));
   }
 
 }

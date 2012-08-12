@@ -3,12 +3,13 @@ package org.odata4j.android.activity;
 import java.util.List;
 
 import org.odata4j.android.AndroidLogger;
+import org.odata4j.android.ProgressDialogTask;
 import org.odata4j.android.R;
 import org.odata4j.android.model.ServiceVM;
 import org.odata4j.consumer.ODataConsumer;
+import org.odata4j.consumer.ODataConsumers;
 import org.odata4j.core.EntitySetInfo;
 import org.odata4j.core.OFuncs;
-import org.odata4j.jersey.consumer.ODataJerseyConsumer;
 import org.odata4j.jersey.consumer.behaviors.AllowSelfSignedCertsBehavior;
 
 import android.app.ListActivity;
@@ -28,11 +29,15 @@ public class EntitySetsActivity extends ListActivity {
     super.onCreate(savedInstanceState);
 
     final ServiceVM service = (ServiceVM) getIntent().getExtras().getSerializable("service");
+    new ProgressDialogTask<List<String>>(this, log, "Loading...") {
+      protected List<String> doStuff() {
+        ODataConsumer c = ODataConsumers.newBuilder(service.getUri()).setClientBehaviors(AllowSelfSignedCertsBehavior.allowSelfSignedCerts()).build();
+        return c.getEntitySets().select(OFuncs.title(EntitySetInfo.class)).toList();
+      }
+      protected void showStuff(List<String> entitySets) {
+        setListAdapter(new ArrayAdapter<String>(EntitySetsActivity.this, R.layout.entityset, entitySets));
+      }}.execute();
 
-    ODataConsumer c = ODataJerseyConsumer.newBuilder(service.getUri()).setClientBehaviors(AllowSelfSignedCertsBehavior.allowSelfSignedCerts()).build();
-    List<String> entitySets = c.getEntitySets().select(OFuncs.title(EntitySetInfo.class)).toList();
-
-    setListAdapter(new ArrayAdapter<String>(this, R.layout.entityset, entitySets));
     getListView().setTextFilterEnabled(true);
     getListView().setOnItemClickListener(new OnItemClickListener() {
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

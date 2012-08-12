@@ -48,7 +48,7 @@ public class EntityViews {
 
     // separator
     View sep = new View(context);
-    sep.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, 1));
+    sep.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 1));
     sep.setBackgroundResource(android.R.color.darker_gray);
     layout.addView(sep);
 

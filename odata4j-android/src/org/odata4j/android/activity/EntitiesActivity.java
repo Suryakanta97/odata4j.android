@@ -4,12 +4,12 @@ import java.util.Iterator;
 
 import org.odata4j.android.AndroidLogger;
 import org.odata4j.android.InfiniteAdapter;
+import org.odata4j.android.ProgressDialogTask;
 import org.odata4j.android.model.ServiceVM;
 import org.odata4j.consumer.ODataConsumer;
+import org.odata4j.consumer.ODataConsumers;
 import org.odata4j.core.OEntity;
 import org.odata4j.core.ORelatedEntitiesLink;
-import org.odata4j.examples.ODataEndpoints;
-import org.odata4j.jersey.consumer.ODataJerseyConsumer;
 import org.odata4j.jersey.consumer.behaviors.AllowSelfSignedCertsBehavior;
 
 import android.app.ListActivity;
@@ -27,47 +27,37 @@ public class EntitiesActivity extends ListActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    final ServiceVM service;
-    String entitySet;
-    ORelatedEntitiesLink link;
-    if (getIntent().getExtras() != null) {
-      service = (ServiceVM) getIntent().getExtras().getSerializable("service");
-      entitySet = (String) getIntent().getExtras().getString("entitySet");
-      link = (ORelatedEntitiesLink) getIntent().getExtras().getSerializable("link");
-    } else {
-      service = new ServiceVM("netflix", ODataEndpoints.NETFLIX);
-      entitySet = "Titles";
-      link = null;
-    }
+    final ServiceVM service = (ServiceVM) getIntent().getExtras().getSerializable("service");
+    final String entitySet = (String) getIntent().getExtras().getString("entitySet");
+    final ORelatedEntitiesLink link = (ORelatedEntitiesLink) getIntent().getExtras().getSerializable("link");
 
     setTitle(link != null ? link.getTitle() : entitySet);
 
-
-    ODataConsumer c = ODataJerseyConsumer.newBuilder(service.getUri()).setClientBehaviors(AllowSelfSignedCertsBehavior.allowSelfSignedCerts()).build();
-    ODataConsumer.dump.all(true);
-
-    Iterator<OEntity> entities = (link != null ? c.getEntities(link) : c.getEntities(entitySet))
+    new ProgressDialogTask<Iterator<OEntity>>(this, log, "Loading...") {
+      protected Iterator<OEntity> doStuff() {
+        ODataConsumer c = ODataConsumers.newBuilder(service.getUri()).setClientBehaviors(AllowSelfSignedCertsBehavior.allowSelfSignedCerts()).build();
+        return (link != null ? c.getEntities(link) : c.getEntities(entitySet))
             // .top(10)
-        .execute().iterator();
-
-    InfiniteAdapter<OEntity> adapter = new InfiniteAdapter<OEntity>(this, entities, 20) {
-      public View getView(int pos, View v, ViewGroup p) {
-        OEntity entity = (OEntity) getItem(pos);
-        return EntityViews.newEntityTable(getContext(), entity, service);
+          .execute().iterator();
       }
-    };
+      protected void showStuff(Iterator<OEntity> entities) {
+        InfiniteAdapter<OEntity> adapter = new InfiniteAdapter<OEntity>(EntitiesActivity.this, entities, 20) {
+          public View getView(int pos, View v, ViewGroup p) {
+            OEntity entity = (OEntity) getItem(pos);
+            return EntityViews.newEntityTable(getContext(), entity, service);
+          }
+        };
+        setListAdapter(adapter);
+        getListView().setOnScrollListener(adapter);
+      }}.execute();
 
     getListView().setOnItemClickListener(new OnItemClickListener() {
       public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
         log.info("onItemClick");
       }
     });
-
-    setListAdapter(adapter);
-    getListView().setOnScrollListener(adapter);
     getListView().setDivider(null);
     getListView().setDividerHeight(0);
-
   }
 
 }

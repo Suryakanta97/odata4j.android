@@ -10,6 +10,10 @@ public class AndroidLogger {
     tag = clazz.getSimpleName();
   }
 
+  public static AndroidLogger get(Class<?> clazz) {
+    return new AndroidLogger(clazz);
+  }
+
   public void info(String format, Object... args) {
     Log.i(tag, String.format(format, args));
   }
@@ -18,7 +22,8 @@ public class AndroidLogger {
     Log.i(tag, message);
   }
 
-  public static AndroidLogger get(Class<?> clazz) {
-    return new AndroidLogger(clazz);
+  public void warn(String message, Exception ex) {
+    Log.w(tag, message, ex);
   }
+
 }

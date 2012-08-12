@@ -16,7 +16,6 @@ public class ServicesVM {
     rt.add(new ServiceVM("TechEd Europe 2010", ODataEndpoints.EU_TECH_ED));
     rt.add(new ServiceVM("eBay", ODataEndpoints.EBAY));
     rt.add(new ServiceVM("Nuget", ODataEndpoints.NUGET));
-    rt.add(new ServiceVM("Agilitrain", ODataEndpoints.AGILITRAIN));
     rt.add(new ServiceVM("Telerik TV", ODataEndpoints.TELERIK_TV));
 
     rt.add(new ServiceVM("Stack Overflow", ODataEndpoints.STACK_OVERFLOW));
